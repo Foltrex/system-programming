@@ -1,0 +1,8 @@
+﻿cl : командная строка warning D9035: использование параметра "Gm" нежелательно, он будет удален в следующих выпусках
+  dns.c
+F:\dns\dns.c(35,20): warning C4013: strlen: нет определения; предполагается "extern" с возвратом типа "int"
+F:\dns\dns.c(46,8): warning C4013: strcpy: нет определения; предполагается "extern" с возвратом типа "int"
+F:\dns\dns.c(72,11): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+F:\dns\dns.c(114,39): warning C4090: функция: разные квалификаторы "const"
+F:\dns\dns.c(116,21): warning C4013: strcmp: нет определения; предполагается "extern" с возвратом типа "int"
+  test.vcxproj -> F:\dns\Debug\test.exe
