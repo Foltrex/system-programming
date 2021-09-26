@@ -12,6 +12,11 @@ Edit this file ONLY!
 #include <stdio.h>
 #include <stdint.h>
 
+/// <summary>
+/// Хеш-таблица реализована с помощью массива списков.
+/// Для преодоления коллизий при хешировании нескольких
+/// элементов в одну яйчейку они помещаются в список
+/// </summary>
 typedef struct _list
 {
 	char* domen;
@@ -19,8 +24,17 @@ typedef struct _list
 	struct _list *next;
 } list;
 
+// Размер хеш таблицы, а также количество "активных" элементов в лучшем случае 
 const int SIZE = 12837;
 
+/// <summary>
+/// Возвращает уникальный идентификатор, который является указателем(который по сути и есть 
+/// индентификатор элемента в памяти) приведенным к типу DNSHandle.
+/// 
+/// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+/// Это позволяет нам создать несколько таких хеш таблиц
+/// </summary>
+/// <returns></returns>
 DNSHandle InitDNS()
 {
 	DNSHandle hDNS = (uint32_t)(list*)calloc(SIZE, sizeof(list));
@@ -30,6 +44,7 @@ DNSHandle InitDNS()
 }
 
 
+// Хеш-фукнция, реализованная через модульное хеширование с использованием метода Горнера
 uint32_t hashFunction(char* s, int table_size, const int key) {
 	int hash = 0;
 	int count = strlen(s);
@@ -39,14 +54,10 @@ uint32_t hashFunction(char* s, int table_size, const int key) {
 	return hash;
 }
 
-void AddDomen(list* ptr, char* domen, IPADDRESS ip) {
-	uint32_t domenSize = strlen(domen);
+void AddDomen(list* ptr, char* domen, IPADDRESS ip);
 
-	ptr->domen = (char*)malloc(domenSize + 1);
-	strcpy(ptr->domen, domen);
-	ptr->ip = ip;
-	ptr->next = NULL;
-}
+
+// Добавление элемента в хеш-таблицу
 void AddToHashTable(DNSHandle hDNS, char* domen, IPADDRESS ip) {
 	list* dictionary = (list*)hDNS;
 
@@ -64,8 +75,18 @@ void AddToHashTable(DNSHandle hDNS, char* domen, IPADDRESS ip) {
 
 }
 
+// Добавление элемента по индексу hash в список 
+void AddDomen(list* ptr, char* domen, IPADDRESS ip) {
+	uint32_t domenSize = strlen(domen);
 
-void LoadHostsFile(DNSHandle hDNS, const char* hostsFilePath)//открытие файла заполнение сервера
+	ptr->domen = (char*)malloc(domenSize + 1);
+	strcpy(ptr->domen, domen);
+	ptr->ip = ip;
+	ptr->next = NULL;
+}
+
+// Инициализация хеш-таблицы чтением из файла
+void LoadHostsFile(DNSHandle hDNS, const char* hostsFilePath)
 {
 	FILE* fInput = NULL;
 
@@ -78,6 +99,7 @@ void LoadHostsFile(DNSHandle hDNS, const char* hostsFilePath)//открытие файла за
 		return;
 	while (fscanf_s(fInput, "%d.%d.%d.%d %s", &ip1, &ip2, &ip3, &ip4, str, 200) != EOF)
 	{
+		// так как каждое из 4 чисел в ip представимо с использованием 8 бит, то в uint можно упаковать 4 таких числа
 		IPADDRESS ip = (ip1 & 0xFF) << 24 |
 			(ip2 & 0xFF) << 16 |
 			(ip3 & 0xFF) << 8 |
@@ -88,8 +110,10 @@ void LoadHostsFile(DNSHandle hDNS, const char* hostsFilePath)//открытие файла за
 	fclose(fInput);
 }
 
-
-
+/// <summary>
+///  освобождение ресурсов, захваченных для хранение таблицы
+/// </summary>
+/// <param name="hDNS"> - уникальный идентификатор хеш-таблицы</param>
 void ShutdownDNS(DNSHandle hDNS)
 {
 	list* arr = (list*)hDNS;
@@ -107,7 +131,12 @@ void ShutdownDNS(DNSHandle hDNS)
 
 
 
-
+/// <summary>
+/// Поиск адреса по домену
+/// </summary>
+/// <param name="hDNS"></param>
+/// <param name="hostName"></param>
+/// <returns> IP-адрес сайта </returns>
 IPADDRESS DnsLookUp(DNSHandle hDNS, const char* hostName)
 {
 	list* dictionary = (list*)hDNS;
