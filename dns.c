@@ -68,14 +68,11 @@ void AddToHashTable(DNSHandle hDNS, char* domen, IPADDRESS ip) {
 void LoadHostsFile(DNSHandle hDNS, const char* hostsFilePath)//открытие файла заполнение сервера
 {
 	FILE* fInput = NULL;
-
-	fInput = fopen(hostsFilePath, "r");
-
-	uint32_t ip1 = 0, ip2 = 0, ip3 = 0, ip4 = 0;
-	char* str = (char*)malloc(201);
-
-	if (NULL == fInput)
+	if (!(fInput = fopen(hostsFilePath, "r")))
 		return;
+
+	char* str = (char*)malloc(201);
+	uint32_t ip1 = 0, ip2 = 0, ip3 = 0, ip4 = 0;
 	while (fscanf_s(fInput, "%d.%d.%d.%d %s", &ip1, &ip2, &ip3, &ip4, str, 200) != EOF)
 	{
 		IPADDRESS ip = (ip1 & 0xFF) << 24 |
@@ -84,7 +81,6 @@ void LoadHostsFile(DNSHandle hDNS, const char* hostsFilePath)//открытие файла за
 			(ip4 & 0xFF);
 		AddToHashTable(hDNS, str, ip);
 	}
-	free(str);
 	fclose(fInput);
 }
 
