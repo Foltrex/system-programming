@@ -90,14 +90,11 @@ void AddDomen(list* ptr, char* domen, IPADDRESS ip) {
 void LoadHostsFile(DNSHandle hDNS, const char* hostsFilePath)
 {
 	FILE* fInput = NULL;
-
-	fInput = fopen(hostsFilePath, "r");
+	if (!(fInput = fopen(hostsFilePath, "r")))
+		return;
 
 	uint32_t ip1 = 0, ip2 = 0, ip3 = 0, ip4 = 0;
 	char* str = (char*)malloc(201);
-
-	if (NULL == fInput)
-		return;
 	while (fscanf_s(fInput, "%d.%d.%d.%d %s", &ip1, &ip2, &ip3, &ip4, str, 200) != EOF)
 	{
 		// since each of the 4 numbers in ip is representable using 8 bits, then 4 such numbers can be packed in uint
@@ -107,7 +104,6 @@ void LoadHostsFile(DNSHandle hDNS, const char* hostsFilePath)
 			(ip4 & 0xFF);
 		AddToHashTable(hDNS, str, ip);
 	}
-	free(str);
 	fclose(fInput);
 }
 
