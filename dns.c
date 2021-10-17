@@ -41,6 +41,7 @@ DNSHandle InitDNS()
 	DNSHandle hDNS = (uint32_t)(list*)calloc(SIZE, sizeof(list));
 	if ((list*)hDNS != NULL)
 		return hDNS;
+
 	return INVALID_DNS_HANDLE;
 }
 
@@ -52,6 +53,7 @@ uint32_t hashFunction(char* s, int table_size, const int key) {
 	for (int i = 0; i < count; ++i) {
 		hash = (hash * key + s[i]) % SIZE;
 	}
+
 	return hash;
 }
 
@@ -73,7 +75,6 @@ void AddToHashTable(DNSHandle hDNS, char* domen, IPADDRESS ip) {
 	}
 	else
 		AddDomen(dictionary + hash, domen, ip);
-
 }
 
 // Adding an item at index hash to a list 
@@ -99,11 +100,12 @@ void LoadHostsFile(DNSHandle hDNS, const char* hostsFilePath)
 	{
 		// since each of the 4 numbers in ip is representable using 8 bits, then 4 such numbers can be packed in uint
 		IPADDRESS ip = (ip1 & 0xFF) << 24 |
-			(ip2 & 0xFF) << 16 |
-			(ip3 & 0xFF) << 8 |
-			(ip4 & 0xFF);
+						(ip2 & 0xFF) << 16 |
+						(ip3 & 0xFF) << 8 |
+						(ip4 & 0xFF);
 		AddToHashTable(hDNS, str, ip);
 	}
+
 	fclose(fInput);
 }
 
