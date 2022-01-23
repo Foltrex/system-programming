@@ -1,2 +1,0 @@
-F:\dns\Debug\test.exe
-F:\dns\Debug\test.pdb
