@@ -1,3 +1,0 @@
-﻿  ProcessA.c
-c:\system programming\лабораторная работа №3\lab3\processa\processa.c(71): warning C4311: 'type cast': pointer truncation from 'LPVOID' to 'DWORD'
-  ProcessA.vcxproj -> C:\System Programming\Лабораторная работа №3\Lab3\x64\Debug\ProcessA.exe
