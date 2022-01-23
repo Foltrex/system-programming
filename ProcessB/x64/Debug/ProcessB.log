@@ -1,3 +1,0 @@
-﻿  ProcessB.c
-c:\system programming\лабораторная работа №3\lab3\processb\processb.c(52): warning C4312: 'type cast': conversion from 'DWORD' to 'char *' of greater size
-  ProcessB.vcxproj -> C:\System Programming\Лабораторная работа №3\Lab3\x64\Debug\ProcessB.exe
